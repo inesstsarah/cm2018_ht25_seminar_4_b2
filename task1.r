@@ -180,5 +180,25 @@ model <- glmer(Rating ~ Patient_Diagnosis + (1 | X) + (1 | Rater),
                family = binomial)
 summary(model)
 
+# Calculate the McNemar's and binomial CIs
+cat("Confusion Matrix: Rater 1 vs Rater 2\n")
+cm_rater2 <- confusionMatrix(as.factor(data$Rater1), as.factor(data$Rater2), positive = "1")
+print(cm_rater2)
+draw_confusion_matrix(cm_rater2)
+binom.test(c(49,43))
+mcnemar.test(cm_rater2)
 
+# Find differences in sensitivity and specificity
+healthy_data_R1 <- data$Rater1[data$Patient_Diagnosis==0]
+healthy_data_R2 <- data$Rater2[data$Patient_Diagnosis==0]
+cm_rater_healthy <- confusionMatrix(as.factor(healthy_data_R1), as.factor(healthy_data_R1), positive = "1")
+print(cm_rater_healthy)
+binom.test(c(49,4))
+binom.test(c(0,0))
 
+unhealthy_data_R1 <- data$Rater1[data$Patient_Diagnosis==1]
+unhealthy_data_R2 <- data$Rater2[data$Patient_Diagnosis==1]
+cm_rater_unhealthy <- confusionMatrix(as.factor(unhealthy_data_R1), as.factor(unhealthy_data_R2), positive = "1")
+print(cm_rater_unhealthy)
+binom.test(c(4,4))
+binom.test(c(4,9))
